@@ -1,0 +1,57 @@
+name: Verify ASTON Attestation SDK
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  proof-package-fixture:
+    name: Verify proof package fixture
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install OpenTimestamps client
+        run: python -m pip install --upgrade pip opentimestamps-client
+
+      - name: Verify certificate pin and detached signature
+        run: |
+          python scripts/verify_proof_package.py examples/proof-package \
+            --cert-sha256 "B2:31:8A:B0:8D:8B:9C:B4:A7:B5:10:F5:36:F7:AC:0B:46:EF:94:77:EC:DC:32:95:4D:E0:6C:77:21:C3:41:47" \
+            --skip-ots
+
+      - name: Confirm tampered manifest is rejected
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp -R examples/proof-package /tmp/aston-proof-tampered
+          printf '\n' >> /tmp/aston-proof-tampered/manifest.json
+          if python scripts/verify_proof_package.py /tmp/aston-proof-tampered \
+            --cert-sha256 "B2:31:8A:B0:8D:8B:9C:B4:A7:B5:10:F5:36:F7:AC:0B:46:EF:94:77:EC:DC:32:95:4D:E0:6C:77:21:C3:41:47" \
+            --skip-ots; then
+            echo "::error::Tampered manifest was incorrectly accepted"
+            exit 1
+          else
+            echo "Expected result: tampered manifest rejected"
+          fi
+
+      - name: Confirm simulated OTS receipt is rejected
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ots verify examples/proof-package/manifest.json.ots; then
+            echo "::error::A simulated OTS receipt was incorrectly accepted"
+            exit 1
+          else
+            echo "Expected result: simulated OTS receipt rejected (not a real timestamp proof)"
+          fi
