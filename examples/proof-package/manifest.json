@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0.0",
+  "attestation_id": "urn:aston:example:proof-package:0001",
+  "created_at": "2026-11-12T12:00:00Z",
+  "agent": {
+    "id": "urn:aston:example-agent:demo",
+    "name": "ASTON Example Agent",
+    "version": "0.1.0",
+    "provider": "ASTON SDK test fixture"
+  },
+  "issuer": {
+    "id": "urn:aston:example-issuer:test-only",
+    "name": "ASTON SDK Test Fixture"
+  },
+  "execution": {
+    "run_id": "demo-run-0001",
+    "started_at": "2026-11-12T11:59:58Z",
+    "ended_at": "2026-11-12T12:00:00Z",
+    "environment": {
+      "platform": "local-test",
+      "runtime_version": "fixture-only"
+    },
+    "input_digests": [],
+    "output_digests": []
+  },
+  "verification": {
+    "status": "unverified",
+    "notes": "Public test fixture only. Not an assertion about a production ASTON execution."
+  },
+  "extensions": {
+    "https://aston.example/test-fixture": {
+      "test_only": true,
+      "purpose": "Exercise detached-signature verification and expected rejection of a fake OTS receipt."
+    }
+  }
+}
