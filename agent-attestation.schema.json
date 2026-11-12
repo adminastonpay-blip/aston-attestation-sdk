@@ -1,0 +1,557 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/adminastonpay-blip/aston-attestation-sdk/blob/main/agent-attestation.schema.json",
+  "title": "AI Agent Attestation",
+  "description": "Portable declaration and evidence-reference format for AI agent identity, execution, provenance, and verification. Schema validation does not establish truth or cryptographic validity.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "attestation_id",
+    "created_at",
+    "agent",
+    "issuer",
+    "execution",
+    "verification"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "attestation_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "agent": {
+      "$ref": "#/$defs/agent"
+    },
+    "issuer": {
+      "$ref": "#/$defs/party"
+    },
+    "subject": {
+      "$ref": "#/$defs/party"
+    },
+    "execution": {
+      "$ref": "#/$defs/execution"
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/artifact"
+      }
+    },
+    "provenance": {
+      "$ref": "#/$defs/provenance"
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/claim"
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/evidence"
+      }
+    },
+    "signatures": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/signature"
+      }
+    },
+    "verification": {
+      "$ref": "#/$defs/verification"
+    },
+    "transparency": {
+      "$ref": "#/$defs/transparency"
+    },
+    "extensions": {
+      "type": "object",
+      "description": "Implementation-specific extension data. Prefer reverse-domain or URI namespaces.",
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "party": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 512
+        },
+        "organization": {
+          "type": "string",
+          "maxLength": 512
+        },
+        "uri": {
+          "type": "string",
+          "format": "uri"
+        },
+        "key_id": {
+          "type": "string",
+          "maxLength": 1024
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "id"
+          ]
+        },
+        {
+          "required": [
+            "uri"
+          ]
+        },
+        {
+          "required": [
+            "key_id"
+          ]
+        }
+      ]
+    },
+    "agent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 512
+        },
+        "version": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "provider": {
+          "type": "string",
+          "maxLength": 512
+        },
+        "runtime": {
+          "type": "string",
+          "maxLength": 512
+        },
+        "model": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "provider": {
+              "type": "string",
+              "maxLength": 256
+            },
+            "name": {
+              "type": "string",
+              "maxLength": 256
+            },
+            "version": {
+              "type": "string",
+              "maxLength": 128
+            },
+            "configuration_digest": {
+              "$ref": "#/$defs/digest"
+            }
+          }
+        },
+        "uri": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_id",
+        "started_at"
+      ],
+      "properties": {
+        "run_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "started_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ended_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "environment": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "platform": {
+              "type": "string",
+              "maxLength": 256
+            },
+            "region": {
+              "type": "string",
+              "maxLength": 128
+            },
+            "runtime_version": {
+              "type": "string",
+              "maxLength": 128
+            },
+            "deployment_id": {
+              "type": "string",
+              "maxLength": 512
+            }
+          }
+        },
+        "input_digests": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/digest"
+          }
+        },
+        "output_digests": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/digest"
+          }
+        }
+      }
+    },
+    "digest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "value"
+      ],
+      "properties": {
+        "algorithm": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "Explicit digest algorithm identifier, e.g. sha-256."
+        },
+        "value": {
+          "type": "string",
+          "pattern": "^[A-Fa-f0-9]+$",
+          "minLength": 32,
+          "maxLength": 512
+        },
+        "media_type": {
+          "type": "string",
+          "maxLength": 256
+        }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_id",
+        "digest"
+      ],
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "kind": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "media_type": {
+          "type": "string",
+          "maxLength": 256
+        },
+        "uri": {
+          "type": "string",
+          "format": "uri"
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "uri"
+            ],
+            "properties": {
+              "uri": {
+                "type": "string",
+                "format": "uri"
+              },
+              "digest": {
+                "$ref": "#/$defs/digest"
+              },
+              "relationship": {
+                "type": "string",
+                "maxLength": 128
+              }
+            }
+          }
+        },
+        "parent_attestations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
+          }
+        }
+      }
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claim_id",
+        "statement"
+      ],
+      "properties": {
+        "claim_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "claim_type": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "asserted",
+            "supported",
+            "disputed",
+            "rejected",
+            "unknown"
+          ]
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 256
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_id",
+        "kind"
+      ],
+      "properties": {
+        "evidence_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "log",
+            "artifact",
+            "measurement",
+            "external_record",
+            "signature",
+            "transparency_proof",
+            "other"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 2048
+        },
+        "uri": {
+          "type": "string",
+          "format": "uri"
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "collected_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "issuer": {
+          "$ref": "#/$defs/party"
+        }
+      }
+    },
+    "signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "key_id",
+        "value"
+      ],
+      "properties": {
+        "algorithm": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "key_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "value": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8192,
+          "description": "Encoded signature bytes; encoding must be specified by the implementation profile."
+        },
+        "signed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "signed_payload_digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "certificate_uri": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "unverified",
+            "verified",
+            "failed",
+            "not_applicable"
+          ]
+        },
+        "verified_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "verifier": {
+          "$ref": "#/$defs/party"
+        },
+        "policy_uri": {
+          "type": "string",
+          "format": "uri"
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "result"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "result": {
+                "type": "string",
+                "enum": [
+                  "passed",
+                  "failed",
+                  "skipped",
+                  "indeterminate"
+                ]
+              },
+              "details": {
+                "type": "string",
+                "maxLength": 2048
+              }
+            }
+          }
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 4096
+        }
+      }
+    },
+    "transparency": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "log_uri": {
+          "type": "string",
+          "format": "uri"
+        },
+        "entry_id": {
+          "type": "string",
+          "maxLength": 1024
+        },
+        "integrated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "inclusion_proof_uri": {
+          "type": "string",
+          "format": "uri"
+        },
+        "anchor_status": {
+          "type": "string",
+          "enum": [
+            "not_submitted",
+            "pending",
+            "anchored",
+            "failed",
+            "not_applicable"
+          ]
+        }
+      }
+    }
+  }
+}
