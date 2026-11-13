@@ -1,5 +1,7 @@
 name: SLSA Build Provenance
 on:
+  push:
+    branches: [chore/security-standardization]
   workflow_dispatch:
 
 permissions:
