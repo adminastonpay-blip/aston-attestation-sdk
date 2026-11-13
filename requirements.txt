@@ -1,0 +1,3 @@
+# Direct CI dependency used by verify-sdk.yml.
+# Pin to the upstream release containing the October 2026 security fixes.
+opentimestamps-client==0.8.0
