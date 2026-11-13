@@ -1,0 +1,50 @@
+name: SLSA Build Provenance
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    outputs:
+      hashes: ${{ steps.hash.outputs.hashes }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
+      - name: Package tracked SDK source
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          git archive --format=tar --prefix=aston-attestation-sdk/ HEAD | gzip -n > dist/aston-attestation-sdk-source.tar.gz
+          test -s dist/aston-attestation-sdk-source.tar.gz
+      - name: Hash source artifact
+        id: hash
+        run: |
+          set -euo pipefail
+          echo "hashes=$(sha256sum dist/aston-attestation-sdk-source.tar.gz | base64 -w0)" >> "$GITHUB_OUTPUT"
+      - name: Retain source artifact
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1
+        with:
+          name: aston-attestation-sdk-source
+          path: dist/aston-attestation-sdk-source.tar.gz
+          if-no-files-found: error
+          retention-days: 30
+
+  provenance:
+    needs: [build]
+    permissions:
+      actions: read
+      id-token: write
+      contents: read
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v2.1.0
+    with:
+      base64-subjects: "${{ needs.build.outputs.hashes }}"
+      private-repository: true
+      upload-assets: false
