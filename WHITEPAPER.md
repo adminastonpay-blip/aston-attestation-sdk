@@ -1,3 +1,7 @@
+<!--
+SPDX-FileCopyrightText: 2026 Aston OS
+SPDX-License-Identifier: Apache-2.0
+-->
 # ASTON Trust Fabric
 ## A verifiable evidence layer for AI agents and automated decisions
 
