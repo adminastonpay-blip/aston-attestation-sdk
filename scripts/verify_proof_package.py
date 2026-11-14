@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 Aston OS
+# SPDX-License-Identifier: Apache-2.0
 """Independent verifier for an ASTON PROOF PACKAGE.
 
 Requires OpenSSL, the official OpenTimestamps CLI (ots), and Python 3.9+.
