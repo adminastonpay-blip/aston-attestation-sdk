@@ -1,0 +1,71 @@
+# SPDX-FileCopyrightText: 2026 Aston OS
+# SPDX-License-Identifier: Apache-2.0
+name: SLSA Build Level 3 Provenance
+
+on:
+  release:
+    types: [created]
+
+permissions:
+  contents: read
+
+jobs:
+  package-source:
+    name: Package release source and calculate digest
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    outputs:
+      base64_subjects: ${{ steps.subject.outputs.base64_subjects }}
+    steps:
+      - name: Check out release source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.event.release.tag_name }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Create source archive and SHA-256 subject
+        id: subject
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+          archive="aston-attestation-sdk-source.tar.gz"
+          git archive --format=tar.gz --prefix=aston-attestation-sdk/ HEAD > "$archive"
+          sha256sum "$archive" > subjects.sha256
+          echo "base64_subjects=$(base64 -w0 subjects.sha256)" >> "$GITHUB_OUTPUT"
+          echo "SOURCE_ARCHIVE_SHA256=$(sha256sum "$archive" | cut -d ' ' -f 1)" >> "$GITHUB_OUTPUT"
+
+      - name: Upload source archive as workflow artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: aston-attestation-sdk-source
+          path: aston-attestation-sdk-source.tar.gz
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Attach source archive to GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: gh release upload "$RELEASE_TAG" aston-attestation-sdk-source.tar.gz --clobber
+
+  provenance:
+    name: Generate isolated SLSA provenance
+    needs: package-source
+    permissions:
+      actions: read
+      contents: write
+      id-token: write
+    # The official SLSA v2.1.0 reusable workflow must be referenced by its
+    # full version tag: slsa-verifier relies on the workflow ref being a tag.
+    # Its upstream README documents that digest pinning is not currently supported.
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v2.1.0
+    with:
+      base64-subjects: ${{ needs.package-source.outputs.base64_subjects }}
+      provenance-name: aston-attestation-sdk-source.intoto.jsonl
+      upload-assets: true
+      upload-tag-name: ${{ github.event.release.tag_name }}
+      compile-generator: true
