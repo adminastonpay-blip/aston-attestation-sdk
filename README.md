@@ -1,4 +1,10 @@
+<!--
+SPDX-FileCopyrightText: 2026 Aston OS
+SPDX-License-Identifier: Apache-2.0
+-->
 # ASTON Agent Attestation
+
+[![REUSE status](https://api.reuse.software/badge/github.com/adminastonpay-blip/aston-attestation-sdk)](https://api.reuse.software/info/github.com/adminastonpay-blip/aston-attestation-sdk)
 
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/adminastonpay-blip/aston-attestation-sdk/badge)](https://scorecard.dev/viewer/?uri=github.com/adminastonpay-blip/aston-attestation-sdk)
 **An open, implementation-neutral format for AI agent traceability and attestation.**
