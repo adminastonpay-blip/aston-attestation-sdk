@@ -67,6 +67,10 @@ The initial schema identifies itself as `1.0.0`. The schema URI and `schema_vers
 
 This repository currently publishes the foundational schema and specification overview. It does not yet claim a certified SDK, production verifier, conformance suite, or third-party interoperability certification.
 
+## Continuous integration
+
+Pull requests run the repository's proof-package verification workflow. The workflow checks the proof-package fixture, certificate pin, detached signature, and expected rejection of tampered or simulated timestamp evidence.
+
 ## Contributing
 
 Issues and pull requests are welcome. Please include:
