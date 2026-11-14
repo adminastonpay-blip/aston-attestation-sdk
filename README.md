@@ -1,5 +1,6 @@
 # ASTON Agent Attestation
 
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/adminastonpay-blip/aston-attestation-sdk/badge)](https://scorecard.dev/viewer/?uri=github.com/adminastonpay-blip/aston-attestation-sdk)
 **An open, implementation-neutral format for AI agent traceability and attestation.**
 
 Repository: [adminastonpay-blip/aston-attestation-sdk](https://github.com/adminastonpay-blip/aston-attestation-sdk)  
