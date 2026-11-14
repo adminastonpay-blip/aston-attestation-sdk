@@ -18,8 +18,11 @@ import tempfile
 from pathlib import Path
 
 
+SUBPROCESS_TIMEOUT_SECONDS = 60
+
+
 def run(command: list[str], label: str) -> str:
-    print(f"[RUN] {label}")
+    print(f"[RUN] {label} (timeout: {SUBPROCESS_TIMEOUT_SECONDS}s)", flush=True)
     try:
         result = subprocess.run(
             command,
@@ -27,9 +30,20 @@ def run(command: list[str], label: str) -> str:
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,
+            timeout=SUBPROCESS_TIMEOUT_SECONDS,
         )
     except FileNotFoundError as exc:
         raise RuntimeError(f"Required executable not found: {command[0]}") from exc
+    except subprocess.TimeoutExpired as exc:
+        partial = exc.stdout or b""
+        if isinstance(partial, bytes):
+            partial = partial.decode(errors="replace")
+        if partial:
+            print(partial, flush=True)
+        raise RuntimeError(
+            f"{label} timed out after {SUBPROCESS_TIMEOUT_SECONDS} seconds; "
+            "the child process was terminated."
+        ) from exc
     output = result.stdout.strip()
     if output:
         print(output)
@@ -118,12 +132,19 @@ def main() -> int:
                 signature_file = Path(temp_dir) / "signature.raw"
                 signature_file.write_bytes(decoded)
             with public_key.open("wb") as output:
-                result = subprocess.run(
-                    ["openssl", "x509", "-in", str(certificate), "-pubkey", "-noout"],
-                    check=False,
-                    stdout=output,
-                    stderr=subprocess.PIPE,
-                )
+                try:
+                    result = subprocess.run(
+                        ["openssl", "x509", "-in", str(certificate), "-pubkey", "-noout"],
+                        check=False,
+                        stdout=output,
+                        stderr=subprocess.PIPE,
+                        timeout=SUBPROCESS_TIMEOUT_SECONDS,
+                    )
+                except subprocess.TimeoutExpired as exc:
+                    raise RuntimeError(
+                        "Public-key extraction timed out after "
+                        f"{SUBPROCESS_TIMEOUT_SECONDS} seconds; the child process was terminated."
+                    ) from exc
             if result.returncode != 0:
                 raise RuntimeError("Could not extract public key from certificate: " + result.stderr.decode(errors="replace"))
             run(
