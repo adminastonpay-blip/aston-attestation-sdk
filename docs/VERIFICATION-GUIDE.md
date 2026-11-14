@@ -1,3 +1,7 @@
+<!--
+SPDX-FileCopyrightText: 2026 Aston OS
+SPDX-License-Identifier: Apache-2.0
+-->
 # ASTON PROOF PACKAGE — Independent Verification Guide
 
 This guide describes how an independent auditor can verify the integrity of a proof package without calling ASTON OS. It uses OpenSSL and the official OpenTimestamps client.

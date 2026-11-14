@@ -1,3 +1,7 @@
+<!--
+SPDX-FileCopyrightText: 2026 Aston OS
+SPDX-License-Identifier: Apache-2.0
+-->
 # OpenSSF Best Practices Badge — Questionnaire Answer Guide
 
 **Repository:** https://github.com/adminastonpay-blip/aston-attestation-sdk  
