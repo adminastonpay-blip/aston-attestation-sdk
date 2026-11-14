@@ -27,6 +27,10 @@ Please include, where possible:
 
 Do not include real credentials, private keys, access tokens, personal information, customer data, private prompts, or confidential production artifacts. Use synthetic data in proof-of-concept material.
 
+## Response target
+
+We aim to acknowledge vulnerability reports within 14 calendar days of receipt. This is a response target, not a guaranteed service-level agreement. Complex reports, incomplete reproduction details, and maintainer availability may affect the time required for triage and remediation.
+
 ## What to expect
 
 The maintainers will make a reasonable effort to acknowledge a private report, assess its reproducibility and impact, coordinate a fix, and communicate a disclosure plan. Response and remediation times are not guaranteed; they depend on severity, report quality, maintainer availability, and the complexity of a safe fix.
