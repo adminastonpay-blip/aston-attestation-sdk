@@ -7,11 +7,23 @@ SPDX-License-Identifier: Apache-2.0
 [![REUSE status](https://api.reuse.software/badge/github.com/adminastonpay-blip/aston-attestation-sdk)](https://api.reuse.software/info/github.com/adminastonpay-blip/aston-attestation-sdk)
 
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/adminastonpay-blip/aston-attestation-sdk/badge)](https://scorecard.dev/viewer/?uri=github.com/adminastonpay-blip/aston-attestation-sdk)
+[![SLSA 3](https://slsa.dev/images/gh-badge-level3.svg)](https://github.com/adminastonpay-blip/aston-attestation-sdk/releases)
 **An open, implementation-neutral format for AI agent traceability and attestation.**
 
 Repository: [adminastonpay-blip/aston-attestation-sdk](https://github.com/adminastonpay-blip/aston-attestation-sdk)  
 Schema: [agent-attestation.schema.json](./agent-attestation.schema.json)  
 License: Apache-2.0
+
+## Supply Chain Security: SBOM and SLSA Provenance available on every release
+
+Each GitHub Release publishes:
+- An SPDX JSON Software Bill of Materials (SBOM), generated from the release source.
+- The release source archive (`aston-attestation-sdk-source.tar.gz`).
+- A signed SLSA Build Level 3 provenance statement for the source archive, generated through the isolated SLSA GitHub Generator.
+
+The SBOM is also generated on every push to `main` and retained as a GitHub Actions artifact. Release assets and workflow artifacts are published by their respective workflows.
+
+Verify provenance before consuming a release. The SLSA badge describes the configured target level; validate the actual release provenance and its subject digest with the official [slsa-verifier](https://github.com/slsa-framework/slsa-verifier). SLSA provenance generation alone does not establish that the source code is safe or that every downstream distribution channel is covered.
 
 ## Purpose
 
