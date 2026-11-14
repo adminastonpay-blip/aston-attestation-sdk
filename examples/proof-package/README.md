@@ -1,3 +1,7 @@
+<!--
+SPDX-FileCopyrightText: 2026 Aston OS
+SPDX-License-Identifier: Apache-2.0
+-->
 # Test-only proof package fixture
 
 All files in this directory are synthetic test fixtures.
