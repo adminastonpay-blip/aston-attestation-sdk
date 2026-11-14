@@ -12,11 +12,13 @@ Security fixes are currently provided for the latest version of the project on t
 
 Please do **not** report suspected security vulnerabilities in a public GitHub issue, discussion, pull request, or social-media post.
 
-Use GitHub's private vulnerability reporting for this repository:
+Use [GitHub's private vulnerability reporting for this repository](https://github.com/adminastonpay-blip/aston-attestation-sdk/security/advisories/new):
 
 1. Open the repository's **Security** tab.
 2. Select **Report a vulnerability** (or **Advisories**, then **Report a vulnerability**, depending on the GitHub interface).
 3. Submit the report privately to the maintainers.
+
+For guidance, see [GitHub's documentation on privately reporting a security vulnerability](https://docs.github.com/en/code-security/security-advisories/guidance-on-reporting-and-managing-vulnerabilities).
 
 If private vulnerability reporting is not enabled or the option is unavailable, contact the repository maintainers privately through the contact route listed on the maintainers' GitHub profile. Do not publish exploit details while arranging contact.
 
@@ -30,6 +32,12 @@ Please include, where possible:
 - Whether the issue is known to affect production deployments or only a local/test fixture.
 
 Do not include real credentials, private keys, access tokens, personal information, customer data, private prompts, or confidential production artifacts. Use synthetic data in proof-of-concept material.
+
+## Privacy and data handling
+
+Security reports should contain only the information necessary to reproduce and assess the suspected vulnerability. Do not submit personal data, customer records, production secrets, private keys, access tokens, or confidential payloads unless the maintainers have explicitly arranged a secure handling process.
+
+Reports submitted through GitHub's private reporting feature are processed using GitHub's services and are subject to [GitHub's Privacy Statement](https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement). This statement describes GitHub's handling of information on its platform; it is not a privacy notice for ASTON-operated products or services. No separate ASTON product privacy notice is established by this repository policy.
 
 ## Response target
 
