@@ -7,17 +7,39 @@ SPDX-License-Identifier: Apache-2.0
 [![REUSE status](https://api.reuse.software/badge/github.com/adminastonpay-blip/aston-attestation-sdk)](https://api.reuse.software/info/github.com/adminastonpay-blip/aston-attestation-sdk)
 
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/adminastonpay-blip/aston-attestation-sdk/badge)](https://scorecard.dev/viewer/?uri=github.com/adminastonpay-blip/aston-attestation-sdk)
+
+[![SLSA 3](https://slsa.dev/images/gh-badge-level3.svg)](https://github.com/adminastonpay-blip/aston-attestation-sdk/releases/tag/v1.0.0)
+
 **An open, implementation-neutral specification for describing AI-agent traceability and attestation evidence.**
 
 Repository: [adminastonpay-blip/aston-attestation-sdk](https://github.com/adminastonpay-blip/aston-attestation-sdk)  
 Schema: [agent-attestation.schema.json](./agent-attestation.schema.json)  
-License: Apache-2.0
+License: Apache-2.0  
+Release: [v1.0.0](https://github.com/adminastonpay-blip/aston-attestation-sdk/releases/tag/v1.0.0)
 
 ## Supply-chain security status
 
-The repository contains workflows configured to generate an SPDX JSON SBOM on pushes to `main` and on GitHub Release creation, and to request SLSA provenance for release source archives. These are configured capabilities, not evidence that a release artifact or provenance has already been published. Check the [Actions](https://github.com/adminastonpay-blip/aston-attestation-sdk/actions) and [Releases](https://github.com/adminastonpay-blip/aston-attestation-sdk/releases) pages for current run results and artifacts.
+**SLSA Build Level 3** has been demonstrated for the source archive of release **v1.0.0**.
 
-**No SLSA level is claimed for this repository at this time.** A SLSA level must be assessed against the applicable requirements and demonstrated by verifiable provenance for a specific artifact. Before consuming any future release, verify its provenance and subject digest with the official [slsa-verifier](https://github.com/slsa-framework/slsa-verifier). Provenance generation does not establish that source code is safe or that every downstream distribution channel is covered.
+| Artifact | Evidence |
+|----------|----------|
+| Source archive | [`aston-attestation-sdk-source.tar.gz`](https://github.com/adminastonpay-blip/aston-attestation-sdk/releases/download/v1.0.0/aston-attestation-sdk-source.tar.gz) |
+| SLSA provenance | [`aston-attestation-sdk-source.intoto.jsonl`](https://github.com/adminastonpay-blip/aston-attestation-sdk/releases/download/v1.0.0/aston-attestation-sdk-source.intoto.jsonl) |
+| SPDX SBOM | [`aston-attestation-sdk-sbom`](https://github.com/adminastonpay-blip/aston-attestation-sdk/releases/download/v1.0.0/aston-attestation-sdk-sbom) |
+
+**Verification command (passed):**
+
+```bash
+slsa-verifier verify-artifact \
+  aston-attestation-sdk-source.tar.gz \
+  --provenance-path aston-attestation-sdk-source.intoto.jsonl \
+  --source-uri github.com/adminastonpay-blip/aston-attestation-sdk \
+  --source-tag v1.0.0
+```
+
+Result: `PASSED` — builder `slsa-framework/slsa-github-generator@v2.1.0` at commit `c2b7b29bfc656f8835c961ce0a4ee01c29107338`.
+
+A SLSA level applies to a specific artifact + provenance pair, not to the repository in the abstract. Always re-verify before consuming any release.
 
 ## Purpose
 
