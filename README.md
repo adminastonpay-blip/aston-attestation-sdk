@@ -2,12 +2,12 @@
 SPDX-FileCopyrightText: 2026 Aston OS
 SPDX-License-Identifier: Apache-2.0
 -->
-# ASTON Agent Attestation
+# ASTON Agent Attestation Specification
 
 [![REUSE status](https://api.reuse.software/badge/github.com/adminastonpay-blip/aston-attestation-sdk)](https://api.reuse.software/info/github.com/adminastonpay-blip/aston-attestation-sdk)
 
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/adminastonpay-blip/aston-attestation-sdk/badge)](https://scorecard.dev/viewer/?uri=github.com/adminastonpay-blip/aston-attestation-sdk)
-**An open, implementation-neutral format for AI agent traceability and attestation.**
+**An open, implementation-neutral specification for describing AI-agent traceability and attestation evidence.**
 
 Repository: [adminastonpay-blip/aston-attestation-sdk](https://github.com/adminastonpay-blip/aston-attestation-sdk)  
 Schema: [agent-attestation.schema.json](./agent-attestation.schema.json)  
@@ -23,7 +23,7 @@ The repository contains workflows configured to generate an SPDX JSON SBOM on pu
 
 ASTON Agent Attestation defines a portable, machine-readable structure for recording what an AI agent claims about its identity, execution context, artifacts, provenance, and supporting evidence.
 
-It is designed as an **open standard that independent third parties can implement** in their own agent runtimes, platforms, audit pipelines, and verification services. It is not tied to ASTON infrastructure or any particular model provider.
+It is designed as an **open specification that independent third parties may implement** in their own agent runtimes, platforms, audit pipelines, and verification services. It is not currently a formally ratified standards-body publication. It is not tied to ASTON infrastructure or any particular model provider.
 
 ## What it records
 
