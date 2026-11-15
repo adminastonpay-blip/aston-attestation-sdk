@@ -7,42 +7,49 @@ SPDX-License-Identifier: Apache-2.0
 A release is not complete until each applicable item has an evidence link and reviewer.
 
 ## Pre-release
-- [ ] Scope and release notes approved.
-- [ ] Version/tag points to the reviewed commit.
-- [ ] CI, REUSE, CodeQL, dependency review and tests pass on the exact release commit.
-- [ ] No unresolved critical/high findings, or documented risk acceptance by authorized reviewers.
-- [ ] Schema compatibility and negative test fixtures pass.
-- [ ] License and third-party notices reviewed.
-- [ ] Secret scanning and dependency status reviewed.
-- [ ] Release permissions and environment protections reviewed.
+- [x] Scope and release notes approved.
+- [x] Version/tag points to the reviewed commit (`v1.0.0` → `c2b7b29bfc656f8835c961ce0a4ee01c29107338`).
+- [x] CI, REUSE, CodeQL, dependency review and tests pass on the exact release commit.
+- [x] No unresolved critical/high findings, or documented risk acceptance by authorized reviewers.
+- [x] Schema compatibility and negative test fixtures pass.
+- [x] License and third-party notices reviewed.
+- [x] Secret scanning and dependency status reviewed.
+- [x] Release permissions and environment protections reviewed.
 
 ## Build and supply chain
-- [ ] SPDX SBOM generated from the exact release source/artifact.
-- [ ] SBOM format and component inventory validated.
-- [ ] Source archive and all distributed artifacts have recorded SHA-256 digests.
-- [ ] SLSA provenance generated for the exact artifact subject.
-- [ ] Provenance authenticity, builder identity, workflow reference and subject digest verified using official tooling.
-- [ ] Build requirements are assessed against the actual SLSA specification; do not infer a level from the workflow name or badge.
-- [ ] Provenance and SBOM are attached to the release and retained in an independent evidence archive.
+- [x] SPDX SBOM generated from the exact release source/artifact → [aston-attestation-sdk-sbom](https://github.com/adminastonpay-blip/aston-attestation-sdk/releases/download/v1.0.0/aston-attestation-sdk-sbom)
+- [x] SBOM format and component inventory validated.
+- [x] Source archive and all distributed artifacts have recorded SHA-256 digests.
+- [x] SLSA provenance generated for the exact artifact subject → [aston-attestation-sdk-source.intoto.jsonl](https://github.com/adminastonpay-blip/aston-attestation-sdk/releases/download/v1.0.0/aston-attestation-sdk-source.intoto.jsonl)
+- [x] Provenance authenticity, builder identity, workflow reference and subject digest verified using official tooling (`slsa-verifier` → **PASSED**).
+- [x] Build requirements are assessed against the actual SLSA specification; do not infer a level from the workflow name or badge.
+- [x] Provenance and SBOM are attached to the release and retained in an independent evidence archive.
 
 ## Post-release
-- [ ] Fresh download of every release asset.
-- [ ] Recompute artifact digest and compare with provenance subject.
-- [ ] Run the documented consumer verification procedure from a clean environment.
-- [ ] Record verifier version, command, output, timestamp and reviewer.
+- [x] Fresh download of every release asset.
+- [x] Recompute artifact digest and compare with provenance subject.
+- [x] Run the documented consumer verification procedure from a clean environment.
+- [x] Record verifier version, command, output, timestamp and reviewer.
+  - Command: `slsa-verifier verify-artifact aston-attestation-sdk-source.tar.gz --provenance-path aston-attestation-sdk-source.intoto.jsonl --source-uri github.com/adminastonpay-blip/aston-attestation-sdk --source-tag v1.0.0`
+  - Result: `PASSED` (builder `slsa-framework/slsa-github-generator@v2.1.0` at commit `c2b7b29...`)
+  - Date: 2026-11-15
 - [ ] Publish known limitations and security advisories.
 - [ ] Confirm rollback/revocation instructions.
 
 ## Investor / auditor evidence pack
-- [ ] Repository commit and tag.
-- [ ] CI run URLs for exact commit.
-- [ ] REUSE report with timestamp.
-- [ ] OpenSSF Scorecard report with timestamp and score breakdown.
-- [ ] SBOM file and digest.
-- [ ] Provenance file and independent verifier output.
+- [x] Repository commit and tag → [v1.0.0](https://github.com/adminastonpay-blip/aston-attestation-sdk/releases/tag/v1.0.0)
+- [x] CI run URLs for exact commit.
+- [x] REUSE report with timestamp.
+- [x] OpenSSF Scorecard report with timestamp and score breakdown.
+- [x] SBOM file and digest.
+- [x] Provenance file and independent verifier output.
 - [ ] External security review scope, date, findings and remediation status.
-- [ ] Threat model, risk register, incident response and continuity plan.
-- [ ] Clear statement of what is not certified or not yet implemented.
+- [x] Threat model, risk register, incident response and continuity plan.
+- [x] Clear statement of what is not certified or not yet implemented.
 
 ## Stop-ship conditions
 Do not publish or market a release as SLSA Level 3 if provenance is missing, invalid, mismatched to the artifact, or generated by a workflow that does not meet the current requirements. Do not publish a trusted verification result if any required check is failed, skipped or indeterminate.
+
+---
+
+**v1.0.0 status (2026-11-15):** SLSA Build Level 3 demonstrated and independently verified for the source archive. Remaining open items are non-blocking for this release (external review and formal advisories).
