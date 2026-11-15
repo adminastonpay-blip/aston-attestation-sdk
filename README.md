@@ -2,34 +2,28 @@
 SPDX-FileCopyrightText: 2026 Aston OS
 SPDX-License-Identifier: Apache-2.0
 -->
-# ASTON Agent Attestation
+# ASTON Agent Attestation Specification
 
 [![REUSE status](https://api.reuse.software/badge/github.com/adminastonpay-blip/aston-attestation-sdk)](https://api.reuse.software/info/github.com/adminastonpay-blip/aston-attestation-sdk)
 
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/adminastonpay-blip/aston-attestation-sdk/badge)](https://scorecard.dev/viewer/?uri=github.com/adminastonpay-blip/aston-attestation-sdk)
-[![SLSA 3](https://slsa.dev/images/gh-badge-level3.svg)](https://github.com/adminastonpay-blip/aston-attestation-sdk/releases)
-**An open, implementation-neutral format for AI agent traceability and attestation.**
+**An open, implementation-neutral specification for describing AI-agent traceability and attestation evidence.**
 
 Repository: [adminastonpay-blip/aston-attestation-sdk](https://github.com/adminastonpay-blip/aston-attestation-sdk)  
 Schema: [agent-attestation.schema.json](./agent-attestation.schema.json)  
 License: Apache-2.0
 
-## Supply Chain Security: SBOM and SLSA Provenance available on every release
+## Supply-chain security status
 
-Each GitHub Release publishes:
-- An SPDX JSON Software Bill of Materials (SBOM), generated from the release source.
-- The release source archive (`aston-attestation-sdk-source.tar.gz`).
-- A signed SLSA Build Level 3 provenance statement for the source archive, generated through the isolated SLSA GitHub Generator.
+The repository contains workflows configured to generate an SPDX JSON SBOM on pushes to `main` and on GitHub Release creation, and to request SLSA provenance for release source archives. These are configured capabilities, not evidence that a release artifact or provenance has already been published. Check the [Actions](https://github.com/adminastonpay-blip/aston-attestation-sdk/actions) and [Releases](https://github.com/adminastonpay-blip/aston-attestation-sdk/releases) pages for current run results and artifacts.
 
-The SBOM is also generated on every push to `main` and retained as a GitHub Actions artifact. Release assets and workflow artifacts are published by their respective workflows.
-
-Verify provenance before consuming a release. The SLSA badge describes the configured target level; validate the actual release provenance and its subject digest with the official [slsa-verifier](https://github.com/slsa-framework/slsa-verifier). SLSA provenance generation alone does not establish that the source code is safe or that every downstream distribution channel is covered.
+**No SLSA level is claimed for this repository at this time.** A SLSA level must be assessed against the applicable requirements and demonstrated by verifiable provenance for a specific artifact. Before consuming any future release, verify its provenance and subject digest with the official [slsa-verifier](https://github.com/slsa-framework/slsa-verifier). Provenance generation does not establish that source code is safe or that every downstream distribution channel is covered.
 
 ## Purpose
 
 ASTON Agent Attestation defines a portable, machine-readable structure for recording what an AI agent claims about its identity, execution context, artifacts, provenance, and supporting evidence.
 
-It is designed as an **open standard that independent third parties can implement** in their own agent runtimes, platforms, audit pipelines, and verification services. It is not tied to ASTON infrastructure or any particular model provider.
+It is designed as an **open specification that independent third parties may implement** in their own agent runtimes, platforms, audit pipelines, and verification services. It is not currently a formally ratified standards-body publication. It is not tied to ASTON infrastructure or any particular model provider.
 
 ## What it records
 
