@@ -1,0 +1,60 @@
+# SPDX-FileCopyrightText: 2026 Aston OS
+# SPDX-License-Identifier: Apache-2.0
+name: Import validated PR 29 hash locks (temporary)
+
+on:
+  push:
+    branches:
+      - security/pr-30-hash-locked-installs
+    paths:
+      - .github/workflows/import-pr29-locks.yml
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  import-locks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout PR 30 branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Download exact PR 29 artifact and verify archive digest
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          artifact_id=14344547881
+          expected=c74f509418663db7cd88ca5b61ebf38d41bd95c1514534555e6f2d3084d9e679
+          curl --fail --location --silent --show-error \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/adminastonpay-blip/aston-attestation-sdk/actions/artifacts/$artifact_id/zip \
+            -o /tmp/pr29-locks.zip
+          actual="$(sha256sum /tmp/pr29-locks.zip | cut -d ' ' -f 1)"
+          test "$actual" = "$expected"
+          unzip -j /tmp/pr29-locks.zip -d .
+          test -s requirements.lock
+          test -s security-tools.lock
+          test "$(find . -maxdepth 1 -name '*.lock' -type f | wc -l)" -eq 2
+
+      - name: Validate both exact lockfiles with hash enforcement
+        uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
+        with:
+          python-version: "3.12"
+
+      - name: Dry-run both locked installations
+        run: |
+          python -m pip install --dry-run --require-hashes -r requirements.lock
+          python -m pip install --dry-run --require-hashes -r security-tools.lock
+
+      - name: Commit the original validated lockfiles to this branch
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add requirements.lock security-tools.lock
+          git commit -m "Security: import validated SHA-256 dependency locks"
+          git push
