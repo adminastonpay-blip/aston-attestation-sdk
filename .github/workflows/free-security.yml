@@ -1,0 +1,52 @@
+# SPDX-FileCopyrightText: 2026 Aston OS
+# SPDX-License-Identifier: Apache-2.0
+name: Free Security Scanning
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: free-security-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  secrets:
+    name: Gitleaks secret scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Install pinned Gitleaks CLI
+        run: go install github.com/zricethezav/gitleaks/v8@v8.24.2
+      - name: Scan for secrets
+        run: "$(go env GOPATH)/bin/gitleaks git . --redact --verbose"
+
+  python-security:
+    name: Semgrep, Bandit and pip-audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install free community scanners
+        run: python -m pip install --upgrade pip semgrep bandit pip-audit
+      - name: Semgrep Python rules
+        run: semgrep scan --config p/python --error --metrics=off .
+      - name: Bandit Python security checks
+        run: bandit -r . -ll
+      - name: Audit pinned Python dependencies
+        run: pip-audit -r requirements.txt
