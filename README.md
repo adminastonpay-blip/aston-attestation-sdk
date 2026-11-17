@@ -5,10 +5,11 @@ SPDX-License-Identifier: Apache-2.0
 # ASTON Agent Attestation Specification
 
 [![REUSE status](https://api.reuse.software/badge/github.com/adminastonpay-blip/aston-attestation-sdk)](https://api.reuse.software/info/github.com/adminastonpay-blip/aston-attestation-sdk)
-
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/adminastonpay-blip/aston-attestation-sdk/badge)](https://scorecard.dev/viewer/?uri=github.com/adminastonpay-blip/aston-attestation-sdk)
-
 [![SLSA Level 3](https://img.shields.io/badge/SLSA-Level%203-green)](https://github.com/adminastonpay-blip/aston-attestation-sdk/actions/runs/44030259211)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![GitHub release](https://img.shields.io/github/v/release/adminastonpay-blip/aston-attestation-sdk)](https://github.com/adminastonpay-blip/aston-attestation-sdk/releases)
+[![Verify SLSA](https://github.com/adminastonpay-blip/aston-attestation-sdk/actions/workflows/verify-slsa-v1.0.0.yml/badge.svg)](https://github.com/adminastonpay-blip/aston-attestation-sdk/actions/workflows/verify-slsa-v1.0.0.yml)
 
 **An open, implementation-neutral specification for describing AI-agent traceability and attestation evidence.**
 
