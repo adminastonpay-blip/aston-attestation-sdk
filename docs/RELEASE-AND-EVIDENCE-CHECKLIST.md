@@ -32,6 +32,7 @@ A release is not complete until each applicable item has an evidence link and re
 - [ ] Record verifier version, command, output, timestamp and reviewer.
   - Command: `slsa-verifier verify-artifact aston-attestation-sdk-source.tar.gz --provenance-path aston-attestation-sdk-source.intoto.jsonl --source-uri github.com/adminastonpay-blip/aston-attestation-sdk --source-tag v1.0.0`
   - Historical note: a previous draft recorded `PASSED` on 2026-11-15, but the verifier output and independently retained evidence are not present in this checklist. That historical entry is superseded and must not be treated as verified evidence.
+  - Audit note (2026-11-17): the source archive SHA-256 was recomputed and matched the provenance subject digest; the DSSE signature validated against the certificate embedded in the provenance. The certificate trust chain and Rekor inclusion proof have **not** been independently validated with the official verifier. This partial check is not a completed provenance verification and does not establish an SLSA level.
 - [ ] Publish known limitations and security advisories.
 - [ ] Confirm rollback/revocation instructions.
 
@@ -41,7 +42,7 @@ A release is not complete until each applicable item has an evidence link and re
 - [x] REUSE report with timestamp.
 - [x] OpenSSF Scorecard report with timestamp and score breakdown.
 - [x] SBOM file and digest.
-- [x] Provenance file and independent verifier output.
+- [ ] Provenance file and independent verifier output. **PENDING:** the provenance asset exists, but official independent verification output is not yet retained.
 - [ ] External security review scope, date, findings and remediation status.
 - [x] Threat model, risk register, incident response and continuity plan.
 - [x] Clear statement of what is not certified or not yet implemented.
