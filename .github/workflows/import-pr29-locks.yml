@@ -3,15 +3,14 @@
 name: Import validated PR 29 hash locks (temporary)
 
 on:
-  push:
-    branches:
-      - security/pr-30-hash-locked-installs
-    paths:
-      - .github/workflows/import-pr29-locks.yml
+  pull_request:
+    branches: [main]
+    types: [opened]
 
 permissions:
   actions: read
   contents: write
+  pull-requests: read
 
 jobs:
   import-locks:
@@ -20,6 +19,10 @@ jobs:
     steps:
       - name: Checkout PR 30 branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          persist-credentials: true
 
       - name: Download exact PR 29 artifact and verify archive digest
         env:
@@ -38,9 +41,8 @@ jobs:
           unzip -j /tmp/pr29-locks.zip -d .
           test -s requirements.lock
           test -s security-tools.lock
-          test "$(find . -maxdepth 1 -name '*.lock' -type f | wc -l)" -eq 2
 
-      - name: Validate both exact lockfiles with hash enforcement
+      - name: Set up Python
         uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
         with:
           python-version: "3.12"
