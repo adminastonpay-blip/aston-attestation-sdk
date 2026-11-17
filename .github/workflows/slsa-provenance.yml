@@ -34,7 +34,7 @@ jobs:
           set -euo pipefail
           echo "hashes=$(sha256sum dist/aston-attestation-sdk-source.tar.gz | base64 -w0)" >> "$GITHUB_OUTPUT"
       - name: Retain source artifact
-        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: aston-attestation-sdk-source
           path: dist/aston-attestation-sdk-source.tar.gz
