@@ -26,8 +26,10 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+      - name: Install pinned Gitleaks CLI
+        run: go install github.com/zricethezav/gitleaks/v8@v8.24.2
       - name: Scan for secrets
-        uses: gitleaks/gitleaks-action@v2.3.9
+        run: "$(go env GOPATH)/bin/gitleaks git . --redact --verbose"
 
   python-security:
     name: Semgrep, Bandit and pip-audit
