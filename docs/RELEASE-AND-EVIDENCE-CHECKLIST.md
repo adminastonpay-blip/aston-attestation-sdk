@@ -31,8 +31,7 @@ A release is not complete until each applicable item has an evidence link and re
 - [ ] Run the documented consumer verification procedure from a clean environment.
 - [ ] Record verifier version, command, output, timestamp and reviewer.
   - Command: `slsa-verifier verify-artifact aston-attestation-sdk-source.tar.gz --provenance-path aston-attestation-sdk-source.intoto.jsonl --source-uri github.com/adminastonpay-blip/aston-attestation-sdk --source-tag v1.0.0`
-  - Result: `PASSED` (builder `slsa-framework/slsa-github-generator@v2.1.0` at commit `c2b7b29...`)
-  - Date: 2026-11-15
+  - Historical note: a previous draft recorded `PASSED` on 2026-11-15, but the verifier output and independently retained evidence are not present in this checklist. That historical entry is superseded and must not be treated as verified evidence.
 - [ ] Publish known limitations and security advisories.
 - [ ] Confirm rollback/revocation instructions.
 
