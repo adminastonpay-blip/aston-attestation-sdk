@@ -1,0 +1,57 @@
+# SPDX-FileCopyrightText: 2026 Aston OS
+# SPDX-License-Identifier: Apache-2.0
+name: Verify published SLSA v1.0.0 release
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/verify-slsa-v1.0.0.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-release:
+    name: Verify original v1.0.0 source and provenance
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Install official SLSA verifier
+        uses: slsa-framework/slsa-verifier/actions/installer@v2.7.1
+
+      - name: Download immutable release assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="https://github.com/adminastonpay-blip/aston-attestation-sdk/releases/download/v1.0.0"
+          curl --fail --location --silent --show-error "$base/aston-attestation-sdk-source.tar.gz" -o aston-attestation-sdk-source.tar.gz
+          curl --fail --location --silent --show-error "$base/aston-attestation-sdk-source.intoto.jsonl" -o aston-attestation-sdk-source.intoto.jsonl
+          echo "Downloaded original GitHub Release assets for v1.0.0"
+
+      - name: Verify source archive digest
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected="227f1487336301051155c6c2531684bcac900bcb3b0c6db6153a4122b2459264"
+          actual="$(sha256sum aston-attestation-sdk-source.tar.gz | cut -d ' ' -f 1)"
+          echo "Expected: $expected"
+          echo "Actual:   $actual"
+          test "$actual" = "$expected"
+
+      - name: Verify SLSA provenance with official verifier
+        shell: bash
+        run: |
+          set -euo pipefail
+          slsa-verifier verify-artifact aston-attestation-sdk-source.tar.gz \
+            --provenance-path aston-attestation-sdk-source.intoto.jsonl \
+            --source-uri github.com/adminastonpay-blip/aston-attestation-sdk \
+            --source-tag v1.0.0 | tee slsa-verifier-result.txt
+
+      - name: Preserve verification result
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: aston-v1.0.0-official-slsa-verification
+          path: slsa-verifier-result.txt
+          if-no-files-found: error
+          retention-days: 90
