@@ -21,15 +21,15 @@ A release is not complete until each applicable item has an evidence link and re
 - [x] SBOM format and component inventory validated.
 - [x] Source archive and all distributed artifacts have recorded SHA-256 digests.
 - [x] SLSA provenance generated for the exact artifact subject → [aston-attestation-sdk-source.intoto.jsonl](https://github.com/adminastonpay-blip/aston-attestation-sdk/releases/download/v1.0.0/aston-attestation-sdk-source.intoto.jsonl)
-- [x] Provenance authenticity, builder identity, workflow reference and subject digest verified using official tooling (`slsa-verifier` → **PASSED**).
-- [x] Build requirements are assessed against the actual SLSA specification; do not infer a level from the workflow name or badge.
-- [x] Provenance and SBOM are attached to the release and retained in an independent evidence archive.
+- [ ] Provenance authenticity, builder identity, workflow reference and subject digest independently verified using official tooling. **PENDING:** retain the exact command, verifier version, output, downloaded artifact digest, provenance subject digest, and reviewer.
+- [ ] Build requirements assessed against the current SLSA specification with evidence. **PENDING:** no level is claimed until the assessment is documented.
+- [ ] Provenance and SBOM are attached to the release and retained in an independent evidence archive. **Attachment presence is not equivalent to verified authenticity or independent retention.**
 
 ## Post-release
-- [x] Fresh download of every release asset.
-- [x] Recompute artifact digest and compare with provenance subject.
-- [x] Run the documented consumer verification procedure from a clean environment.
-- [x] Record verifier version, command, output, timestamp and reviewer.
+- [ ] Fresh download of every release asset.
+- [ ] Recompute artifact digest and compare with provenance subject.
+- [ ] Run the documented consumer verification procedure from a clean environment.
+- [ ] Record verifier version, command, output, timestamp and reviewer.
   - Command: `slsa-verifier verify-artifact aston-attestation-sdk-source.tar.gz --provenance-path aston-attestation-sdk-source.intoto.jsonl --source-uri github.com/adminastonpay-blip/aston-attestation-sdk --source-tag v1.0.0`
   - Result: `PASSED` (builder `slsa-framework/slsa-github-generator@v2.1.0` at commit `c2b7b29...`)
   - Date: 2026-11-15
@@ -52,4 +52,4 @@ Do not publish or market a release as SLSA Level 3 if provenance is missing, inv
 
 ---
 
-**v1.0.0 status (2026-11-15):** SLSA Build Level 3 demonstrated and independently verified for the source archive. Remaining open items are non-blocking for this release (external review and formal advisories).
+**v1.0.0 status (2026-11-17):** SLSA workflow configured; provenance asset reported as published. Independent cryptographic verification and evidence review remain **PENDING**. No SLSA level is claimed. Do not use an SLSA level badge or investor-facing claim until the artifact/provenance pair has been verified and the applicable requirements have been assessed.
