@@ -42,11 +42,11 @@ jobs:
         uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
         with:
           python-version: "3.12"
-      - name: Install free community scanners
-        run: python -m pip install --upgrade pip semgrep bandit pip-audit
+      - name: Install hash-locked free community scanners
+        run: python -m pip install --disable-pip-version-check --require-hashes -r security-tools.lock
       - name: Semgrep Python rules
         run: semgrep scan --config p/python --error --metrics=off .
       - name: Bandit Python security checks
         run: bandit -r . -ll
-      - name: Audit pinned Python dependencies
-        run: pip-audit -r requirements.txt
+      - name: Audit hash-locked runtime dependencies
+        run: pip-audit -r requirements.lock
