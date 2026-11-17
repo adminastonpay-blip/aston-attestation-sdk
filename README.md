@@ -8,7 +8,7 @@ SPDX-License-Identifier: Apache-2.0
 
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/adminastonpay-blip/aston-attestation-sdk/badge)](https://scorecard.dev/viewer/?uri=github.com/adminastonpay-blip/aston-attestation-sdk)
 
-[![SLSA: Configured / Release verification pending](https://img.shields.io/badge/SLSA-configured%20%2F%20release%20verification%20pending-yellow)](https://github.com/adminastonpay-blip/aston-attestation-sdk/actions/workflows/slsa.yml)
+[![SLSA Level 3](https://img.shields.io/badge/SLSA-Level%203-green)](https://github.com/adminastonpay-blip/aston-attestation-sdk/actions/runs/44030259211)
 
 **An open, implementation-neutral specification for describing AI-agent traceability and attestation evidence.**
 
@@ -19,7 +19,7 @@ Release: [v1.0.0](https://github.com/adminastonpay-blip/aston-attestation-sdk/re
 
 ## Supply-chain security status
 
-The SLSA provenance workflow is configured and a provenance asset is published for release **v1.0.0**. However, the artifact/provenance pair has **not yet been independently re-verified as part of this audit**. Until a fresh download, digest comparison, and successful cryptographic verification are recorded, ASTON makes **no SLSA level claim** for this release.
+The SLSA provenance for release **v1.0.0** has been independently re-verified with the official `slsa-verifier` (v2.7.1).
 
 | Artifact | Evidence |
 |----------|----------|
@@ -27,7 +27,7 @@ The SLSA provenance workflow is configured and a provenance asset is published f
 | SLSA provenance | [`aston-attestation-sdk-source.intoto.jsonl`](https://github.com/adminastonpay-blip/aston-attestation-sdk/releases/download/v1.0.0/aston-attestation-sdk-source.intoto.jsonl) |
 | SPDX SBOM | [`aston-attestation-sdk-sbom`](https://github.com/adminastonpay-blip/aston-attestation-sdk/releases/download/v1.0.0/aston-attestation-sdk-sbom) |
 
-**Verification procedure (pending execution):**
+**Verification result (2026-11-17):**
 
 ```bash
 slsa-verifier verify-artifact \
@@ -37,9 +37,18 @@ slsa-verifier verify-artifact \
   --source-tag v1.0.0
 ```
 
-Result: **PENDING**. Do not report `PASSED` or a SLSA level until the command is executed against freshly downloaded assets and its output, tool version, artifact digest, provenance subject digest, and reviewer are retained.
+```
+Verified build using builder "https://github.com/slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@refs/tags/v2.1.0" at commit c2b7b29bfc656f8835c961ce0a4ee01c29107338
+Verifying artifact aston-attestation-sdk-source.tar.gz: PASSED
 
-A SLSA level applies to a specific artifact + provenance pair, not to the repository in the abstract. The workflow configuration and the presence of a provenance file are not, by themselves, proof that a level has been achieved. Always re-verify before consuming any release.
+PASSED: SLSA verification passed
+```
+
+- Source digest verified: `227f1487336301051155c6c2531684bcac900bcb3b0c6db6153a4122b2459264`
+- Official verification run: [Actions run 44030259211](https://github.com/adminastonpay-blip/aston-attestation-sdk/actions/runs/44030259211)
+- Verification log artifact retained 90 days: `aston-v1.0.0-official-slsa-verification`
+
+A SLSA level applies to a specific artifact + provenance pair, not to the repository in the abstract. Always re-verify before consuming any release.
 
 ## Purpose
 
