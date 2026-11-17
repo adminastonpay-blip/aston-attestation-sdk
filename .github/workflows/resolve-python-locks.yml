@@ -1,0 +1,62 @@
+# SPDX-FileCopyrightText: 2026 Aston OS
+# SPDX-License-Identifier: Apache-2.0
+name: Resolve Python hash locks (bootstrap)
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'requirements.txt'
+      - 'security-tools.in'
+      - '.github/workflows/resolve-python-locks.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  resolve-locks:
+    name: Resolve pinned Python dependencies with SHA-256 hashes
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Python
+        uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
+        with:
+          python-version: '3.12'
+
+      # Bootstrap-only resolver. The resulting lockfiles contain hashes for
+      # every resolved package and will replace direct pip installs in CI.
+      - name: Install exact pip-tools resolver
+        run: python -m pip install --disable-pip-version-check 'pip-tools==7.7.0'
+
+      - name: Compile runtime dependency lock
+        run: python -m piptools compile --resolver=backtracking --generate-hashes --output-file=requirements.lock requirements.txt
+
+      - name: Compile security scanner dependency lock
+        run: python -m piptools compile --resolver=backtracking --generate-hashes --output-file=security-tools.lock security-tools.in
+
+      - name: Validate hash-locked installations
+        run: |
+          python -m pip install --dry-run --require-hashes -r requirements.lock
+          python -m pip install --dry-run --require-hashes -r security-tools.lock
+
+      - name: Show generated lockfiles for review
+        run: |
+          echo '=== requirements.lock ==='
+          cat requirements.lock
+          echo '=== security-tools.lock ==='
+          cat security-tools.lock
+
+      - name: Upload generated lockfiles
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: aston-python-hash-locks
+          path: |
+            requirements.lock
+            security-tools.lock
+          if-no-files-found: error
+          retention-days: 7
