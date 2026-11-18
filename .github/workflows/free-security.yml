@@ -49,4 +49,4 @@ jobs:
       - name: Bandit Python security checks
         run: bandit -r . -ll
       - name: Audit hash-locked runtime dependencies
-        run: pip-audit -r requirements.lock
+        run: pip-audit --timeout 60 -r requirements.lock
