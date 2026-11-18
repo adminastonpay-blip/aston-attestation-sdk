@@ -188,10 +188,11 @@ class SQLiteSnapshotRollbackGuard:
             try:
                 self._connection.execute("BEGIN IMMEDIATE")
                 cursor = self._connection.execute(
-                    f"INSERT INTO {self._TABLE} (issuer_id, sequence, snapshot_id) VALUES (?, ?, ?) "
+                    "INSERT INTO aston_revocation_snapshot_heads "
+                    "(issuer_id, sequence, snapshot_id) VALUES (?, ?, ?) "
                     "ON CONFLICT(issuer_id) DO UPDATE SET "
                     "sequence=excluded.sequence, snapshot_id=excluded.snapshot_id "
-                    f"WHERE excluded.sequence > {self._TABLE}.sequence",
+                    "WHERE excluded.sequence > aston_revocation_snapshot_heads.sequence",
                     (issuer_id, sequence, snapshot_id),
                 )
                 accepted = cursor.rowcount == 1
