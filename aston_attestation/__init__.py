@@ -10,14 +10,17 @@ from .containment import (
     canonical_command_bytes,
     evaluate_containment_command,
 )
+from .containment_adapters import Ed25519IssuerKeyring, SQLiteReplayGuard
 from .validation import ValidationError, validate_attestation
 
 __all__ = [
     "ContainmentAction",
     "ContainmentCommand",
     "ContainmentTarget",
+    "Ed25519IssuerKeyring",
     "PolicyDecision",
     "RevocationSnapshot",
+    "SQLiteReplayGuard",
     "ValidationError",
     "canonical_command_bytes",
     "evaluate_containment_command",
