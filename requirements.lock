@@ -72,7 +72,7 @@ pycryptodomex==3.24.2 \
     --hash=sha256:fca1303bc8e9ad6a2e61e8e528161f1988776d12b7f523ec2b02e0e2e991424a \
     --hash=sha256:fe43b58a7d4a9c6aa33490f04eab4ffcd72320842dfddf1774357a54eebf09fc \
     --hash=sha256:feea36c026018e665503555d22c6d5ba32f4a4e4465cb553f56ede8b745a5e05
-    # via opentimestamps
+    # via -r requirements.txt, opentimestamps
 pysocks==1.7.1 \
     --hash=sha256:08e69f092cc6dbe92a0fdd16eeb9b9ffbc13cadfe5ca4c7bd92ffb078b293299 \
     --hash=sha256:2725bd0a9925919b9b51739eea5f9e2bae91e83288108a9ad338b2e3a4435ee5 \
