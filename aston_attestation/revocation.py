@@ -115,7 +115,7 @@ def verify_revocation_snapshot(
         if not isinstance(item, tuple) or len(item) != 3:
             raise ValueError("invalid_revoked_target")
         target_type, target_id, tenant_id = item
-        if target_type not in _TARGET_TYPES:
+        if not isinstance(target_type, str) or target_type not in _TARGET_TYPES:
             raise ValueError("invalid_target_type")
         if target_type == ContainmentTarget.PLATFORM.value:
             if target_id != "*" or tenant_id is not None:
