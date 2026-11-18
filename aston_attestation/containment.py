@@ -107,7 +107,7 @@ def evaluate_containment_command(
     command: ContainmentCommand,
     *,
     now: int,
-    revocations: RevocationSnapshot,
+    revocations: object,
     signature_verifier: SignatureVerifier,
     issuer_authorizer: IssuerAuthorizer,
     replay_guard: ReplayGuard,
@@ -160,10 +160,17 @@ def evaluate_containment_command(
     if command.expires_at <= command.issued_at or command.expires_at - command.issued_at > max_validity_seconds:
         return PolicyDecision(False, "validity_window_exceeded")
 
+    # Import locally to avoid a module cycle: revocation.py shares the
+    # ContainmentTarget enum for snapshot scope validation.
+    from .revocation import VerifiedRevocationSnapshot
+
+    if not isinstance(revocations, VerifiedRevocationSnapshot):
+        return PolicyDecision(False, "revocation_snapshot_unverified")
     if (
-        not isinstance(revocations, RevocationSnapshot)
-        or not isinstance(revocations.issued_at, int)
+        not isinstance(revocations.issued_at, int)
+        or isinstance(revocations.issued_at, bool)
         or not isinstance(revocations.fresh_until, int)
+        or isinstance(revocations.fresh_until, bool)
         or revocations.issued_at > now + clock_skew_seconds
         or revocations.fresh_until <= now
         or revocations.fresh_until <= revocations.issued_at
