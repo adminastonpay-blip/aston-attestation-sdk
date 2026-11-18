@@ -125,10 +125,13 @@ def evaluate_containment_command(
         command.action, ContainmentAction
     ):
         return PolicyDecision(False, "unsupported_command")
-    if not all(
-        isinstance(value, str) and _ID.fullmatch(value)
-        for value in (command.command_id, command.issuer_id, command.target_id)
-    ):
+    identifiers = (command.command_id, command.issuer_id)
+    if not all(isinstance(value, str) and _ID.fullmatch(value) for value in identifiers):
+        return PolicyDecision(False, "invalid_identifier")
+    if command.target_type is ContainmentTarget.PLATFORM:
+        if command.target_id != "*":
+            return PolicyDecision(False, "invalid_platform_scope")
+    elif not isinstance(command.target_id, str) or not _ID.fullmatch(command.target_id):
         return PolicyDecision(False, "invalid_identifier")
     if not isinstance(command.reason, str) or not command.reason.strip() or len(command.reason) > _MAX_REASON:
         return PolicyDecision(False, "invalid_reason")
