@@ -44,7 +44,7 @@ def evaluate(cmd=None, **overrides):
     args = {
         "now": 1050,
         "revocations": RevocationSnapshot(990, 1100),
-        "signature_verifier": lambda payload, signature: signature == "test-signature",
+        "signature_verifier": lambda payload, signature, issuer_id: signature == "test-signature" and issuer_id == "authority-1",
         "issuer_authorizer": lambda issuer, item: issuer == "authority-1",
         "replay_guard": ReplayStore(),
     }
@@ -63,10 +63,10 @@ class ContainmentPolicyTests(unittest.TestCase):
         self.assertIn(b"aston-containment-command-v1", canonical_command_bytes(first))
 
     def test_rejects_invalid_signature(self):
-        self.assertEqual(evaluate(signature_verifier=lambda payload, sig: False).code, "invalid_signature")
+        self.assertEqual(evaluate(signature_verifier=lambda payload, sig, issuer_id: False).code, "invalid_signature")
 
     def test_signature_verifier_exception_fails_closed(self):
-        def broken(payload, signature):
+        def broken(payload, signature, issuer_id):
             raise RuntimeError("verifier offline")
         self.assertEqual(evaluate(signature_verifier=broken).code, "signature_verification_error")
 
@@ -140,7 +140,7 @@ class ContainmentPolicyTests(unittest.TestCase):
         kwargs = {
             "now": 1050,
             "revocations": RevocationSnapshot(990, 1100),
-            "signature_verifier": lambda payload, signature: True,
+            "signature_verifier": lambda payload, signature, issuer_id: True,
             "issuer_authorizer": lambda issuer, item: True,
             "replay_guard": store,
         }

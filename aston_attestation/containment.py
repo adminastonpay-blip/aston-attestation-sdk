@@ -70,7 +70,7 @@ class ReplayGuard(Protocol):
         ...
 
 
-SignatureVerifier = Callable[[bytes, str], bool]
+SignatureVerifier = Callable[[bytes, str, str], bool]
 IssuerAuthorizer = Callable[[str, ContainmentCommand], bool]
 ApprovalVerifier = Callable[[ContainmentCommand, str], bool]
 
@@ -180,7 +180,7 @@ def evaluate_containment_command(
         return PolicyDecision(False, "target_revoked")
 
     try:
-        if not signature_verifier(canonical_command_bytes(command), command.signature):
+        if not signature_verifier(canonical_command_bytes(command), command.signature, command.issuer_id):
             return PolicyDecision(False, "invalid_signature")
     except Exception:
         return PolicyDecision(False, "signature_verification_error")
