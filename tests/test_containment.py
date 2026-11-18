@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import unittest
 
-from aston_attestation.revocation import VerifiedRevocationSnapshot
+from aston_attestation.revocation import SignedRevocationSnapshot, VerifiedRevocationSnapshot, verify_revocation_snapshot
 
 from aston_attestation.containment import (
     ContainmentAction,
@@ -12,6 +12,16 @@ from aston_attestation.containment import (
     canonical_command_bytes,
     evaluate_containment_command,
 )
+
+
+class AcceptRollback:
+    def accept(self, issuer_id, sequence, snapshot_id):
+        return True
+
+
+def verified_snapshot(snapshot_id='snapshot-001', sequence=1, issued_at=990, fresh_until=1100, revoked_issuers=(), revoked_targets=(), verification_now=1050):
+    signed = SignedRevocationSnapshot(snapshot_id, sequence, 'revocation-authority', issued_at, fresh_until, tuple(revoked_issuers), tuple(revoked_targets), 'snapshot-signature')
+    return verify_revocation_snapshot(signed, now=verification_now, signature_verifier=lambda payload, signature, issuer: signature == 'snapshot-signature', issuer_authorizer=lambda issuer: issuer == 'revocation-authority', rollback_guard=AcceptRollback())
 
 
 class ReplayStore:
@@ -45,9 +55,7 @@ def command(**changes):
 def evaluate(cmd=None, **overrides):
     args = {
         "now": 1050,
-        "revocations": VerifiedRevocationSnapshot(
-            "snapshot-001", 1, "revocation-authority", 990, 1100, (), ()
-        ),
+        "revocations": verified_snapshot(),
         "signature_verifier": lambda payload, signature, issuer_id: signature == "test-signature" and issuer_id == "authority-1",
         "issuer_authorizer": lambda issuer, item: issuer == "authority-1",
         "replay_guard": ReplayStore(),
@@ -86,6 +94,10 @@ class ContainmentPolicyTests(unittest.TestCase):
     def test_rejects_excessive_validity_window(self):
         self.assertEqual(evaluate(command(expires_at=1400)).code, "validity_window_exceeded")
 
+    def test_rejects_manually_constructed_verified_snapshot(self):
+        forged = VerifiedRevocationSnapshot("forged", 1, "revocation-authority", 990, 1100, (), ())
+        self.assertEqual(evaluate(revocations=forged).code, "revocation_snapshot_unverified")
+
     def test_rejects_legacy_unsigned_revocation_snapshot(self):
         self.assertEqual(
             evaluate(revocations=RevocationSnapshot(990, 1100)).code,
@@ -93,21 +105,14 @@ class ContainmentPolicyTests(unittest.TestCase):
         )
 
     def test_rejects_stale_revocation_snapshot(self):
-        self.assertEqual(evaluate(revocations=VerifiedRevocationSnapshot(
-            "snapshot-old", 4, "revocation-authority", 900, 1049, (), ()
-        )).code, "revocation_snapshot_stale")
+        self.assertEqual(evaluate(revocations=verified_snapshot("snapshot-old", 4, 900, 1049, verification_now=1000)).code, "revocation_snapshot_stale")
 
     def test_rejects_revoked_issuer(self):
-        snapshot = VerifiedRevocationSnapshot(
-            "snapshot-002", 2, "revocation-authority", 990, 1100, ("authority-1",), ()
-        )
+        snapshot = verified_snapshot("snapshot-002", 2, revoked_issuers=("authority-1",))
         self.assertEqual(evaluate(revocations=snapshot).code, "issuer_revoked")
 
     def test_rejects_revoked_exact_target(self):
-        snapshot = VerifiedRevocationSnapshot(
-            "snapshot-003", 3, "revocation-authority", 990, 1100, (),
-            (("identity", "agent-17", "tenant-a"),)
-        )
+        snapshot = verified_snapshot("snapshot-003", 3, revoked_targets=(("identity", "agent-17", "tenant-a"),))
         self.assertEqual(evaluate(revocations=snapshot).code, "target_revoked")
 
     def test_tenant_scope_is_required(self):
@@ -154,9 +159,7 @@ class ContainmentPolicyTests(unittest.TestCase):
         store = ReplayStore()
         kwargs = {
             "now": 1050,
-            "revocations": VerifiedRevocationSnapshot(
-                "snapshot-replay", 5, "revocation-authority", 990, 1100, (), ()
-            ),
+            "revocations": verified_snapshot("snapshot-replay", 5),
             "signature_verifier": lambda payload, signature, issuer_id: True,
             "issuer_authorizer": lambda issuer, item: True,
             "replay_guard": store,
