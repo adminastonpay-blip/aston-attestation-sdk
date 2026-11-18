@@ -2,6 +2,8 @@
 # SPDX-License-Identifier: Apache-2.0
 import unittest
 
+from aston_attestation.revocation import VerifiedRevocationSnapshot
+
 from aston_attestation.containment import (
     ContainmentAction,
     ContainmentCommand,
@@ -43,7 +45,9 @@ def command(**changes):
 def evaluate(cmd=None, **overrides):
     args = {
         "now": 1050,
-        "revocations": RevocationSnapshot(990, 1100),
+        "revocations": VerifiedRevocationSnapshot(
+            "snapshot-001", 1, "revocation-authority", 990, 1100, (), ()
+        ),
         "signature_verifier": lambda payload, signature, issuer_id: signature == "test-signature" and issuer_id == "authority-1",
         "issuer_authorizer": lambda issuer, item: issuer == "authority-1",
         "replay_guard": ReplayStore(),
@@ -82,16 +86,27 @@ class ContainmentPolicyTests(unittest.TestCase):
     def test_rejects_excessive_validity_window(self):
         self.assertEqual(evaluate(command(expires_at=1400)).code, "validity_window_exceeded")
 
+    def test_rejects_legacy_unsigned_revocation_snapshot(self):
+        self.assertEqual(
+            evaluate(revocations=RevocationSnapshot(990, 1100)).code,
+            "revocation_snapshot_unverified",
+        )
+
     def test_rejects_stale_revocation_snapshot(self):
-        self.assertEqual(evaluate(revocations=RevocationSnapshot(900, 1049)).code, "revocation_snapshot_stale")
+        self.assertEqual(evaluate(revocations=VerifiedRevocationSnapshot(
+            "snapshot-old", 4, "revocation-authority", 900, 1049, (), ()
+        )).code, "revocation_snapshot_stale")
 
     def test_rejects_revoked_issuer(self):
-        snapshot = RevocationSnapshot(990, 1100, revoked_issuers=("authority-1",))
+        snapshot = VerifiedRevocationSnapshot(
+            "snapshot-002", 2, "revocation-authority", 990, 1100, ("authority-1",), ()
+        )
         self.assertEqual(evaluate(revocations=snapshot).code, "issuer_revoked")
 
     def test_rejects_revoked_exact_target(self):
-        snapshot = RevocationSnapshot(
-            990, 1100, revoked_targets=(("identity", "agent-17", "tenant-a"),)
+        snapshot = VerifiedRevocationSnapshot(
+            "snapshot-003", 3, "revocation-authority", 990, 1100, (),
+            (("identity", "agent-17", "tenant-a"),)
         )
         self.assertEqual(evaluate(revocations=snapshot).code, "target_revoked")
 
@@ -139,7 +154,9 @@ class ContainmentPolicyTests(unittest.TestCase):
         store = ReplayStore()
         kwargs = {
             "now": 1050,
-            "revocations": RevocationSnapshot(990, 1100),
+            "revocations": VerifiedRevocationSnapshot(
+                "snapshot-replay", 5, "revocation-authority", 990, 1100, (), ()
+            ),
             "signature_verifier": lambda payload, signature, issuer_id: True,
             "issuer_authorizer": lambda issuer, item: True,
             "replay_guard": store,
