@@ -12,12 +12,15 @@ from __future__ import annotations
 import argparse
 import base64
 import hashlib
+import json
 import re
 import shutil
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
+
+from aston_attestation import ValidationError, validate_attestation
 
 
 SUBPROCESS_TIMEOUT_SECONDS = 60
@@ -156,6 +159,13 @@ def main() -> int:
                 ],
                 "Detached SHA-256 signature verification",
             )
+
+        try:
+            manifest_document = json.loads(manifest.read_text(encoding="utf-8"))
+            validate_attestation(manifest_document)
+        except (OSError, json.JSONDecodeError, ValidationError) as exc:
+            raise RuntimeError(f"Manifest schema validation failed: {exc}") from exc
+        print("[PASS] Manifest conforms to the ASTON Agent Attestation schema")
 
         if not args.skip_ots:
             ots_command = ["ots"]
