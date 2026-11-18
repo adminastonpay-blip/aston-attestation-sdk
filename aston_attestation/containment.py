@@ -162,9 +162,9 @@ def evaluate_containment_command(
 
     # Import locally to avoid a module cycle: revocation.py shares the
     # ContainmentTarget enum for snapshot scope validation.
-    from .revocation import VerifiedRevocationSnapshot
+    from .revocation import is_verified_revocation_snapshot
 
-    if not isinstance(revocations, VerifiedRevocationSnapshot):
+    if not is_verified_revocation_snapshot(revocations):
         return PolicyDecision(False, "revocation_snapshot_unverified")
     if (
         not isinstance(revocations.issued_at, int)
