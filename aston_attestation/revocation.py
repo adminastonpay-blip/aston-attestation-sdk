@@ -38,7 +38,7 @@ class VerifiedRevocationSnapshot:
     fresh_until: int
     revoked_issuers: tuple[str, ...]
     revoked_targets: tuple[tuple[str, str, str | None], ...]
-    _verification_token: object = dataclass_field(default=None, repr=False, compare=False)
+    _verification_token: object = dataclass_field(default=None, init=False, repr=False, compare=False)
 
 
 _VERIFICATION_TOKEN = object()
