@@ -11,6 +11,13 @@ from .containment import (
     evaluate_containment_command,
 )
 from .containment_adapters import Ed25519IssuerKeyring, SQLiteReplayGuard
+from .revocation import (
+    SignedRevocationSnapshot,
+    SQLiteSnapshotRollbackGuard,
+    VerifiedRevocationSnapshot,
+    canonical_revocation_snapshot_bytes,
+    verify_revocation_snapshot,
+)
 from .validation import ValidationError, validate_attestation
 
 __all__ = [
@@ -21,8 +28,13 @@ __all__ = [
     "PolicyDecision",
     "RevocationSnapshot",
     "SQLiteReplayGuard",
+    "SignedRevocationSnapshot",
+    "SQLiteSnapshotRollbackGuard",
+    "VerifiedRevocationSnapshot",
     "ValidationError",
     "canonical_command_bytes",
     "evaluate_containment_command",
     "validate_attestation",
+    "canonical_revocation_snapshot_bytes",
+    "verify_revocation_snapshot",
 ]
