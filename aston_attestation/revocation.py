@@ -7,7 +7,7 @@ import json
 import re
 import sqlite3
 import threading
-from dataclasses import dataclass
+from dataclasses import dataclass, field as dataclass_field
 from typing import Callable, Protocol
 
 from .containment import ContainmentTarget
@@ -38,6 +38,17 @@ class VerifiedRevocationSnapshot:
     fresh_until: int
     revoked_issuers: tuple[str, ...]
     revoked_targets: tuple[tuple[str, str, str | None], ...]
+    _verification_token: object = dataclass_field(default=None, repr=False, compare=False)
+
+
+_VERIFICATION_TOKEN = object()
+
+
+def is_verified_revocation_snapshot(value: object) -> bool:
+    return (
+        isinstance(value, VerifiedRevocationSnapshot)
+        and value._verification_token is _VERIFICATION_TOKEN
+    )
 
 
 class SnapshotRollbackGuard(Protocol):
@@ -154,12 +165,14 @@ def verify_revocation_snapshot(
         raise
     except Exception as exc:
         raise ValueError("snapshot_rollback_store_unavailable") from exc
-    return VerifiedRevocationSnapshot(
+    verified = VerifiedRevocationSnapshot(
         snapshot.snapshot_id, snapshot.sequence, snapshot.issuer_id,
         snapshot.issued_at, snapshot.fresh_until,
         tuple(sorted(snapshot.revoked_issuers)),
         tuple(sorted(snapshot.revoked_targets, key=lambda item: (item[0], item[1], item[2] or ""))),
     )
+    object.__setattr__(verified, "_verification_token", _VERIFICATION_TOKEN)
+    return verified
 
 
 class SQLiteSnapshotRollbackGuard:
