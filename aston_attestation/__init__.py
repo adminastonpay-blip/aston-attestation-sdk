@@ -1,6 +1,11 @@
 # SPDX-FileCopyrightText: 2026 Aston OS
 # SPDX-License-Identifier: Apache-2.0
 """ASTON Agent Attestation reference SDK."""
+from .artifact_policy import (
+    ArtifactApproval,
+    PolicyDecision as ArtifactPolicyDecision,
+    evaluate_artifact,
+)
 from .containment import (
     ContainmentAction,
     ContainmentCommand,
@@ -21,6 +26,8 @@ from .revocation import (
 from .validation import ValidationError, validate_attestation
 
 __all__ = [
+    "ArtifactApproval",
+    "ArtifactPolicyDecision",
     "ContainmentAction",
     "ContainmentCommand",
     "ContainmentTarget",
@@ -33,6 +40,7 @@ __all__ = [
     "VerifiedRevocationSnapshot",
     "ValidationError",
     "canonical_command_bytes",
+    "evaluate_artifact",
     "evaluate_containment_command",
     "validate_attestation",
     "canonical_revocation_snapshot_bytes",
