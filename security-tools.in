@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: 2026 Aston OS
 # SPDX-License-Identifier: Apache-2.0
 # Direct security-scanner dependencies; transitive dependencies are resolved into security-tools.lock.
-semgrep==1.185.0
+semgrep==1.186.0
 bandit==1.9.4
 pip-audit==2.10.1
